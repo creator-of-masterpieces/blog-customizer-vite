@@ -6,13 +6,11 @@ import {
   fontFamilyOptions,
   fontSizeOptions,
   type ArticleStateType,
-  type OptionType,
 } from '@/constants/articleProps';
 import { RadioGroup } from '@/ui/radio-group';
 import { Select } from '@/ui/select';
 import { Separator } from '@/ui/separator';
-// eslint-disable-next-line import/no-named-as-default
-import clsx from 'clsx';
+import { clsx } from 'clsx';
 import { useEffect, useRef, useState, type FormEvent } from 'react';
 import { ArrowButton } from 'src/ui/arrow-button';
 import { Button } from 'src/ui/button';
@@ -25,131 +23,113 @@ type ArticleParamsFormProps = {
 };
 
 export const ArticleParamsForm = (props: ArticleParamsFormProps): React.JSX.Element => {
-  const [isOpen, setIsOpen] = useState(true);
-
-  const [fontFamily, setFontFamily] = useState<OptionType>(
-    defaultArticleState.fontFamilyOption
-  );
-
-  const [fontSize, setFontSize] = useState<OptionType>(
-    defaultArticleState.fontSizeOption
-  );
-
-  const [fontColor, setFontColor] = useState<OptionType>(defaultArticleState.fontColor);
-
-  const [bgColor, setBgColor] = useState<OptionType>(
-    defaultArticleState.backgroundColor
-  );
-
-  const [contentWidth, setContentWidth] = useState<OptionType>(
-    defaultArticleState.contentWidth
-  );
-
-  const asideRef = useRef<HTMLElement>(null);
+  const [isFormOpen, setIsFormOpen] = useState(false);
+  const [formState, setFormState] = useState<ArticleStateType>(defaultArticleState);
+  const divRef = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
-    if (!isOpen) return;
+    if (!isFormOpen) return;
 
     const handleMouseDown = (evt: MouseEvent): void => {
-      const aside = asideRef.current;
+      const div = divRef.current;
       const { target } = evt;
-      if (!aside || !(target instanceof Node)) return;
+      if (!div || !(target instanceof Node)) return;
 
-      const arrow = aside?.previousElementSibling;
+      const arrow = div?.previousElementSibling;
 
-      if (!aside?.contains(target) && !arrow?.contains(target)) {
-        setIsOpen(false);
+      if (!div?.contains(target) && !arrow?.contains(target)) {
+        setIsFormOpen(false);
       }
     };
     window.addEventListener('mousedown', handleMouseDown);
     return (): void => {
       window.removeEventListener('mousedown', handleMouseDown);
     };
-  }, [isOpen]);
+  }, [isFormOpen]);
 
   function handleSubmit(evt: FormEvent<HTMLFormElement>): void {
     evt.preventDefault();
-    props.onSubmit({
-      fontFamilyOption: fontFamily,
-      fontColor: fontColor,
-      backgroundColor: bgColor,
-      contentWidth: contentWidth,
-      fontSizeOption: fontSize,
-    });
-    setIsOpen(false);
+    props.onSubmit(formState);
+    setIsFormOpen(false);
   }
 
   function handleReset(evt: FormEvent<HTMLFormElement>): void {
     evt.preventDefault();
 
-    setFontFamily(defaultArticleState.fontFamilyOption);
-    setFontSize(defaultArticleState.fontSizeOption);
-    setFontColor(defaultArticleState.fontColor);
-    setBgColor(defaultArticleState.backgroundColor);
-    setContentWidth(defaultArticleState.contentWidth);
+    setFormState(defaultArticleState);
     props.onSubmit(defaultArticleState);
   }
 
   return (
     <>
-      <ArrowButton isOpen={isOpen} onClick={() => setIsOpen((prev) => !prev)} />
-      <aside
-        className={clsx(styles.container, { [styles.container_open]: isOpen })}
-        ref={asideRef}
-      >
-        <form
-          className={styles.form}
-          onSubmit={(evt) => handleSubmit(evt)}
-          onReset={(evt) => handleReset(evt)}
+      <div ref={divRef}>
+        <ArrowButton
+          isOpen={isFormOpen}
+          onClick={() => setIsFormOpen((prev) => !prev)}
+        />
+        <aside
+          className={clsx(styles.container, { [styles.container_open]: isFormOpen })}
         >
-          <Text as={'h2'} size={31} weight={800} uppercase={true}>
-            Задайте параметры
-          </Text>
+          <form className={styles.form} onSubmit={handleSubmit} onReset={handleReset}>
+            <Text as="h2" size={31} weight={800} uppercase>
+              Задайте параметры
+            </Text>
 
-          <Select
-            title="шрифт"
-            selected={fontFamily}
-            options={fontFamilyOptions}
-            onChange={(option) => setFontFamily(option)}
-          />
+            <Select
+              title="Шрифт"
+              selected={formState.fontFamilyOption}
+              options={fontFamilyOptions}
+              onChange={(option) =>
+                setFormState((prev) => ({ ...prev, fontFamilyOption: option }))
+              }
+            />
 
-          <RadioGroup
-            name={'fontSizes'}
-            options={fontSizeOptions}
-            selected={fontSize}
-            title={'размер шрифта'}
-            onChange={(option) => setFontSize(option)}
-          />
+            <RadioGroup
+              title="Размер шрифта"
+              selected={formState.fontSizeOption}
+              options={fontSizeOptions}
+              onChange={(option) =>
+                setFormState((prev) => ({ ...prev, fontSizeOption: option }))
+              }
+              name="fontSizes"
+            />
 
-          <Select
-            title="Цвет шрифта"
-            selected={fontColor}
-            options={fontColors}
-            onChange={(option) => setFontColor(option)}
-          />
+            <Select
+              title="Цвет шрифта"
+              selected={formState.fontColor}
+              options={fontColors}
+              onChange={(option) =>
+                setFormState((prev) => ({ ...prev, fontColor: option }))
+              }
+            />
 
-          <Separator />
+            <Separator />
 
-          <Select
-            title="Цвет фона"
-            selected={bgColor}
-            options={backgroundColors}
-            onChange={(option) => setBgColor(option)}
-          />
+            <Select
+              title="Цвет фона"
+              selected={formState.backgroundColor}
+              options={backgroundColors}
+              onChange={(option) =>
+                setFormState((prev) => ({ ...prev, backgroundColor: option }))
+              }
+            />
 
-          <Select
-            title="Ширина контента"
-            selected={contentWidth}
-            options={contentWidthArr}
-            onChange={(option) => setContentWidth(option)}
-          />
+            <Select
+              title="Ширина контента"
+              selected={formState.contentWidth}
+              options={contentWidthArr}
+              onChange={(option) =>
+                setFormState((prev) => ({ ...prev, contentWidth: option }))
+              }
+            />
 
-          <div className={styles.bottomContainer}>
-            <Button title="Сбросить" htmlType="reset" type="clear" />
-            <Button title="Применить" htmlType="submit" type="apply" />
-          </div>
-        </form>
-      </aside>
+            <div className={styles.bottomContainer}>
+              <Button title="Сбросить" htmlType="reset" type="clear" />
+              <Button title="Применить" htmlType="submit" type="apply" />
+            </div>
+          </form>
+        </aside>
+      </div>
     </>
   );
 };
