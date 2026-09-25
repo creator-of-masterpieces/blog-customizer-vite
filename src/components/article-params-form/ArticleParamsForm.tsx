@@ -16,6 +16,7 @@ import clsx from 'clsx';
 import { useEffect, useRef, useState, type FormEvent } from 'react';
 import { ArrowButton } from 'src/ui/arrow-button';
 import { Button } from 'src/ui/button';
+import { Text } from 'src/ui/text';
 
 import styles from './ArticleParamsForm.module.scss';
 
@@ -101,6 +102,10 @@ export const ArticleParamsForm = (props: ArticleParamsFormProps): React.JSX.Elem
           onSubmit={(evt) => handleSubmit(evt)}
           onReset={(evt) => handleReset(evt)}
         >
+          <Text as={'h2'} size={31} weight={800} uppercase={true}>
+            Задайте параметры
+          </Text>
+
           <Select
             title="шрифт"
             selected={fontFamily}
