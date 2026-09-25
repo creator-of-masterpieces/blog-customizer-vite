@@ -6,7 +6,7 @@ type UseOutsideClickCloseProps = {
   onClose: () => void;
 };
 
-export const UseOutsideClickClose = ({
+export const useOutsideClickClose = ({
   isOpen,
   rootRef,
   onClose,
@@ -15,11 +15,11 @@ export const UseOutsideClickClose = ({
     if (!isOpen) return;
 
     const handleMouseDown = (evt: MouseEvent): void => {
-      const div = rootRef.current;
+      const rootElement = rootRef.current;
       const { target } = evt;
-      if (!div || !(target instanceof Node)) return;
+      if (!rootElement || !(target instanceof Node)) return;
 
-      if (!div.contains(target)) {
+      if (!rootElement.contains(target)) {
         onClose();
       }
     };

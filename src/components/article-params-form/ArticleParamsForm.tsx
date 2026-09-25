@@ -17,7 +17,7 @@ import { ArrowButton } from 'src/ui/arrow-button';
 import { Button } from 'src/ui/button';
 import { Text } from 'src/ui/text';
 
-import { UseOutsideClickClose } from './hooks/useOutsideClickClose';
+import { useOutsideClickClose } from './hooks/useOutsideClickClose';
 
 import styles from './ArticleParamsForm.module.scss';
 
@@ -31,7 +31,7 @@ export const ArticleParamsForm = (props: ArticleParamsFormProps): React.JSX.Elem
   const rootRef = useRef<HTMLDivElement>(null);
   const closeForm = useCallback(() => setIsFormOpen(false), []);
 
-  UseOutsideClickClose({
+  useOutsideClickClose({
     isOpen: isFormOpen,
     rootRef,
     onClose: closeForm,
