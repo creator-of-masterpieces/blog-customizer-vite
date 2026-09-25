@@ -1,16 +1,16 @@
 import { useEffect, type RefObject } from 'react';
 
-type useOutsideClickCloseProps = {
+type UseOutsideClickCloseProps = {
   isOpen: boolean;
   rootRef: RefObject<HTMLElement | null>;
   onClose: () => void;
 };
 
-export const useOutsideClickClose = ({
+export const UseOutsideClickClose = ({
   isOpen,
   rootRef,
   onClose,
-}: useOutsideClickCloseProps): void => {
+}: UseOutsideClickCloseProps): void => {
   useEffect(() => {
     if (!isOpen) return;
 
@@ -19,7 +19,7 @@ export const useOutsideClickClose = ({
       const { target } = evt;
       if (!div || !(target instanceof Node)) return;
 
-      if (!div?.contains(target)) {
+      if (!div.contains(target)) {
         onClose();
       }
     };
